@@ -2,7 +2,7 @@ import curses
 from curses.textpad import rectangle
 
 data = [
-    ["ID", "Tên", "Tuổi", "Điểm"],
+    ["ID", "Tên", "Tuổi", "Điể"],
     ["1", "An", "20", "8.5"],
     ["2", "Bình", "22", "7.8"],
     ["3", "Cường", "19", "9.1"],
