@@ -9,7 +9,6 @@ from tabulate import tabulate
 from prompt_toolkit.shortcuts import message_dialog
 from prompt_toolkit.shortcuts import input_dialog
 from prompt_toolkit.shortcuts import yes_no_dialog
-from prompt_toolkit.shortcuts import button_dialog
 from prompt_toolkit.shortcuts import radiolist_dialog
 from prompt_toolkit.shortcuts import checkboxlist_dialog
 
@@ -50,19 +49,14 @@ def set_status():
     ).run()
     return sta
 
-def temp():
-    set_temp = input_dialog(
-        title = 'NHIỆT ĐỘ',
-        text = 'BẠN HÃY NHẬP VÀO NHIỆT ĐỘ:'
-    ).run()
-    return set_temp
 
-def humidity():
-    set_humi = input_dialog(
-        title = 'ĐỘ ẨM',
-        text = 'BẠN HÃY NHẬP VÀO ĐỘ ẨM:'
+def adjust(str1,str2):
+    set = input_dialog(
+        title = str1,
+        text = str2
     ).run()
-    return set_humi
+    return set
+
 
 def show_table():
     table = tabulate(data, headers="firstrow", tablefmt="grid")    
@@ -115,14 +109,25 @@ while True:
     if CHOOSE == "temp":
         STAT = set_status()
         if STAT == "1":
-            data[5][2] = temp()
+            i = adjust("NHIET DO","HAY NHAP VAO NHIET DO: ")
+            while True:
+                if int(i) <= 16 or int(i)>=39:
+                    i = adjust("NHIET DO KHONG HOP LE","HAY NHAP LAI NHIET DO: ")
+                else:
+                    break
+            data[5][2] = i
         else:
             data[5][2] = "OFF"
 
     if CHOOSE == "humi":
-        STAT = set_status()
         if STAT == "1":
-            data[6][2] = humidity()
+            i = adjust("DO AM","HAY NHAP VAO DO AM: ")
+            while True:
+                if int(i) <= 30 or int(i) >= 90:
+                    i = adjust("DO AM KHONG HOP LE","HAY NHAP LAI DO AM: ")
+                else:
+                    break
+            data[6][2] = i
         else:
             data[6][2] = "OFF"
     with open("data.txt", "w") as file:

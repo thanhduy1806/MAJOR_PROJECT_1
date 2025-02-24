@@ -12,20 +12,26 @@ my_dict = {
     "TEMPERATURE" : (5,2),
     "HUMIDITY" : (6,2),
 }
+
+list_rec = {"LED 1" , "LED 2", "FAN 1", "FAN 2", "TEMPERATUREM", "HUMIDITY", "ON", "OFF"}
+
+
 #VỊ TRÍ DATA[X][Y]
 x = 0 
 y = 0
+
+file_data = "../PROMPT_TOOLKIT/data.txt"
 
 text = 0
 #ĐỌC FILE
 def op_file():
     global data
-    with open ("data_copy.txt","r") as file:
+    with open (file_data,"r") as file:
         data = json.load(file)
 
 #GHI FILE
 def write_file():
-    with open ("data_copy.txt","w") as file:
+    with open (file_data,"w") as file:
         json.dump(data, file, indent=4)
 
 #TẠO TEXTBOX
@@ -51,14 +57,15 @@ def text_box(stdscr):
 
 #HIỂN THỊ YÊU CẦU
 def title(stdscr,name):
-
+    stdscr.move(17,0)
+    stdscr.clrtoeol()
     stdscr.addstr(17, 18, f"HÃY NHẬP {name} ")
     stdscr.refresh()
 
 #HIỂN THỊ KẾT QUẢ NHẬP
 def result(stdscr,text):
     stdscr.move(23, 0)  # Chọn dòng y
-    stdscr.deleteln()
+    stdscr.clrtoeol()
     stdscr.addstr(23,19 , f"Bạn đã nhập: {text} ")
     stdscr.refresh()
 
@@ -72,6 +79,7 @@ def show_table(stdscr):
 
     rectangle(stdscr, 1, 0, len(data) + 2, 50)
 
+    #TÍNH TOÁN ĐỘ RỘNG LỚN NHẤT CỦA MỖI CỘT ĐỂ TRÌNH BÀY CHO PHÙ HỢPHỢP
     col_width = []
     for i in range(len(data[0])):
         max_row = 0
@@ -80,7 +88,6 @@ def show_table(stdscr):
                 max_row = len(data[j][i])
         col_width.append(max_row)
 
-    
 
     for rows,value in enumerate(data):
         index = 0
@@ -109,12 +116,14 @@ def device_choose():
     if a == 6:
         return 3
 
+
 def check_device(stdscr,text):
     list = ["LED 1", "LED 2", "FAN 1", "FAN 2", "TEMPERATURE", "HUMIDITY"]
     if text in list:
             return 1
     else:
-            
+        stdscr.move(17,0)
+        stdscr.clrtoeol()    
         stdscr.addstr(17, 19,"THIẾT BỊ KHÔNG TỒN TẠI, HÃY NHẬP LẠI: ")   
         stdscr.refresh()
         return 0
@@ -125,30 +134,99 @@ def check_onoff(stdscr,text):
     if text == "ON" or text == "OFF":
         return 1
     else:
+        stdscr.move(17,0)
+        stdscr.clrtoeol()
         stdscr.addstr(17, 19,"TRẠNG THÁI KHÔNG PHÙ HỢP, HÃY NHẬP LẠI: ")     
         stdscr.refresh()
         return 0
+
+
+def check_temp(stdscr,text):
+    num = int(text)
+    if num <= 16 or num >= 35:
+        stdscr.move(17,0)
+        stdscr.clrtoeol()
+        stdscr.addstr(17, 19,"NHIỆT ĐỘ KHÔNG PHÙ HỢP, HÃY NHẬP LẠI: ")     
+        stdscr.refresh()
+        return 0
+    else:
+        return 1
 
  
 def check_humi(stdscr,text):
     num = int(text)
     if num <= 30 or num >= 90:
-
+        stdscr.move(17,0)
+        stdscr.clrtoeol()
         stdscr.addstr(17, 19,"ĐỘ ẨM KHÔNG PHÙ HỢP, HÃY NHẬP LẠI: ")     
         stdscr.refresh()
         return 0
     else:
         return 1
 
-def check_temp(stdscr,text):
-    num = int(text)
-    if num <= 16 or num >= 35:
-        stdscr.addstr(17, 19,"NHIỆT ĐỘ KHÔNG PHÙ HỢP, HÃY NHẬP LẠI: ")     
-        stdscr.refresh()
-        return 0
-    else:
-        return 1
     
+def change_onoff(stdscr):
+    
+    show_table(stdscr)
+    title(stdscr,"ON/OFF")
+           
+    while True:
+        text = text_box(stdscr)  # Chỉ gọi text_box(stdscr) một lần và gán vào text
+        result(stdscr, text)  
+        if check_onoff(stdscr, text) == 1:  # Dùng text đã nhập để kiểm tra
+            stdscr.move(17,0)
+            stdscr.clrtoeol()
+            stdscr.addstr(17, 19,"BẠN ĐÃ ĐIỀU CHỈNH TRẠNG THÁI THÀNH CÔNG!")     
+            stdscr.refresh()
+            break
+
+
+def change_temp(stdscr):
+    show_table(stdscr)
+    title(stdscr,"THÔNG SỐ HOẶC OFF")
+           
+    while True:
+        text = text_box(stdscr)  # Chỉ gọi text_box(stdscr) một lần và gán vào text
+        result(stdscr, text)  
+        if check_temp(stdscr, text) == 1:  # Dùng text đã nhập để kiểm tra
+            stdscr.move(17,0)
+            stdscr.clrtoeol()
+            stdscr.addstr(17, 19,"BẠN ĐÃ ĐIỀU CHỈNH TRẠNG THÁI THÀNH CÔNG!")     
+            stdscr.refresh()
+            break  # Thoát vòng lặp nếu nhập đúng
+
+
+def change_humi(stdscr):
+    show_table(stdscr)
+    title(stdscr,"THÔNG SỐ HOẶC OFF")
+           
+    while True:
+        text = text_box(stdscr)  # Chỉ gọi text_box(stdscr) một lần và gán vào text
+        result(stdscr, text)  
+        if check_humi(stdscr, text) == 1:  # Dùng text đã nhập để kiểm tra
+            stdscr.move(17,0)
+            stdscr.clrtoeol()
+            stdscr.addstr(17, 19,"BẠN ĐÃ ĐIỀU CHỈNH TRẠNG THÁI THÀNH CÔNG!")     
+            stdscr.refresh()
+            break
+
+
+
+#XÓA DÒNG BẤT KỲ
+def delete_line(line,stdscr):
+    stdscr.move(line, 0)  # Chọn dòng y
+    stdscr.deleteln()
+    stdscr.refresh()
+
+#THOÁT CHƯƠNG TRÌNH
+def exit(stdscr):
+    stdscr.refresh()
+    stdscr.addstr(24,19 ,"NHẤN BẤT KỲ ĐỂ TIẾP TỤC HOẶC Q ĐỂ THOÁT: ")
+    stdscr.refresh()
+    a = stdscr.getch()
+    if a == ord("Q"):
+        return 1
+
 
 
 
@@ -177,24 +255,13 @@ def main(stdscr):
         stdscr.clear()
         stdscr.refresh()
         i = device_choose()
-        if i == 1:
-            show_table(stdscr)
-            title(stdscr,"ON/OFF")
-           
-            while True:
-                text = text_box(stdscr)  # Chỉ gọi text_box(stdscr) một lần và gán vào text
-                result(stdscr, text)  
-                if check_onoff(stdscr, text) == 1:  # Dùng text đã nhập để kiểm tra
-                    break  # Thoát vòng lặp nếu nhập đúng
-            
-            
+          # Thoát vòng lặp nếu nhập đúng
+        if i == 1 :
+            change_onoff(stdscr)
             write(x,y,text)
             write_file()
             show_table(stdscr)
-            stdscr.refresh()
-            stdscr.addstr(24,19 ,"NHAN Q NEU MUON THOAT CHUONG TRINH ")
-            a = stdscr.getch()
-            if a == ord("Q"):
+            if exit(stdscr) == 1:
                 break
             stdscr.move(24, 0)  # Chọn dòng y
             stdscr.deleteln()  # Xóa toàn bộ dòng hiện tại
@@ -203,23 +270,11 @@ def main(stdscr):
             stdscr.refresh()
         
         if i == 2:
-            show_table(stdscr)
-            title(stdscr,"THÔNG SỐ HOẶC OFF")
-           
-            while True:
-                text = text_box(stdscr)  # Chỉ gọi text_box(stdscr) một lần và gán vào text
-                result(stdscr, text)  
-                if check_temp(stdscr, text) == 1:  # Dùng text đã nhập để kiểm tra
-                    break  # Thoát vòng lặp nếu nhập đúng
-
-            
+            change_temp(stdscr)
             write(x,y,text)
             write_file()
             show_table(stdscr)
-            stdscr.refresh()
-            stdscr.addstr(24,19 ,"NHAN Q NEU MUON THOAT CHUONG TRINH ")
-            a = stdscr.getch()
-            if a == ord("Q"):
+            if exit(stdscr) == 1:
                 break
             stdscr.move(24, 0)  # Chọn dòng y
             stdscr.deleteln()  # Xóa toàn bộ dòng hiện tại
@@ -229,38 +284,17 @@ def main(stdscr):
 
 
         if i == 3:
-            show_table(stdscr)
-            title(stdscr,"THÔNG SỐ HOẶC OFF")
-           
-            while True:
-                text = text_box(stdscr)  # Chỉ gọi text_box(stdscr) một lần và gán vào text
-                result(stdscr, text)  
-                if check_humi(stdscr, text) == 1:  # Dùng text đã nhập để kiểm tra
-                    break  # Thoát vòng lặp nếu nhập đúng
-
-            
+            change_humi(stdscr)
             write(x,y,text)
             write_file()
             show_table(stdscr)
-            stdscr.refresh()
-            stdscr.addstr(24,19 ,"NHAN Q NEU MUON THOAT CHUONG TRINH ")
-            a = stdscr.getch()
-            if a == ord("Q"):
+            if exit(stdscr) == 1:
                 break
             stdscr.move(24, 0)  # Chọn dòng y
             stdscr.deleteln()  # Xóa toàn bộ dòng hiện tại
             stdscr.move(23, 0)  # Chọn dòng y
             stdscr.deleteln()
             stdscr.refresh()
-
-
-
-
-
-
-
-
-
 wrapper(main)
 
 
