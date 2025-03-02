@@ -1,0 +1,22 @@
+[
+    {
+        "key": "SSH Service",
+        "value": "Enabled"
+    },
+    {
+        "key": "VNC Service",
+        "value": "Disabled"
+    },
+    {
+        "key": "Remote GPIO",
+        "value": "Enabled"
+    },
+    {
+        "key": "Serial Port",
+        "value": "Disabled"
+    },
+    {
+        "key": "Port",
+        "value": "8880"
+    }
+]
