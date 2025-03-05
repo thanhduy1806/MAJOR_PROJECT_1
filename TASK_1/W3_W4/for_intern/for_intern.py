@@ -120,9 +120,10 @@ class RaspiGUI:
             "disk_usage": 0,
             "temperature": 0
         }
+        self.setup_keybindings()
+
         threading.Thread(target=self.update_utils_data, daemon=True).start()
         
-        self.setup_keybindings()
         
         #TẠO LUỒNG ĐỂ CHẠY THỜI GIAN
         time_thread = threading.Thread(target=self.load_time, daemon=True)
@@ -749,5 +750,23 @@ Hmm nhưng mà cái đó nó trả về list tuple.. nên không thể chèn cá
 
 Ý tưởng mới mới
 Khi layout ở cái hàm get_container() thì so sánh xem nó có logs không thì nếu nó là cửa số logs thì chèn nó thêm cái frame
+-------------------
+DONE
+'''
 
+
+
+'''
+TASK MỚI:
+Hiển thi 1 ma trận dữ liệu 6x6 gửi ra từ cảm biến trên cửa sổ tracking
+1/Tìm hiểu cái dạng file ghi cảm biến và đọc về
+done!
+2/Tìm cách đọc đúng cái giá trị trên cái dòng đó
+done!
+- Trong file read_log.py
+lỗi phát sinh:
+Khi ta đọc về nhưng nếu giá trị đó cảm biến trả về có 2 lần thôi mà ta so sánh điều kiện có T2 thì nó sẽ lỗi
+
+3/Tìm cách lưu nó vào đâu đó để hiển thị:
+4/Làm sao để hiển thị mỗi giá trị sáng lên khi mỗi lần cập nhật
 '''
