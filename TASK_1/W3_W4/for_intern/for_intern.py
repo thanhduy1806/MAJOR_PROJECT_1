@@ -11,11 +11,16 @@ from datetime import datetime
 from prompt_toolkit.layout.containers import Window
 import pytz
 import psutil
+import re
+from tabulate import tabulate
 
 class RaspiGUI:
 
     def __init__(self):
+        self.sensor_value = [[None]*6 for _ in range(6)]
+        self.output_log_line = [0,0,0,0,0,0]
         self.port_buffer = None
+        self.formatted = []
         self.kb = KeyBindings()
         self.mode = 'menu'
         self.selected_item = 0
@@ -123,13 +128,16 @@ class RaspiGUI:
         self.setup_keybindings()
 
         threading.Thread(target=self.update_utils_data, daemon=True).start()
+
         
         
         #TẠO LUỒNG ĐỂ CHẠY THỜI GIAN
         time_thread = threading.Thread(target=self.load_time, daemon=True)
         time_thread.start()
 
-
+        #TẠO LUỒNG UPDATE VALUE SENSOR
+        sensor_thread = threading.Thread(target= self.send_to_matrix, daemon=True)
+        sensor_thread.start()
 
     #TAO 1 LUONG DE LIEN TUC UPDATE THOI GIAN 
     def load_time(self):
@@ -454,8 +462,11 @@ class RaspiGUI:
             
             #đây là chỗ ta sẽ tạo thêm 1 trường hơp nếu nó là logs để cho nó hiển thị cái khuing nhập luioonuioon
             
-
+        elif selected_key == "Tracking":
+            content = self.formatted 
+            return content
         
+
         elif selected_key in self.settings_data:
             content = []
             content.append(('class:info.title', f"\n  {selected_key} Settings:\n\n"))
@@ -469,135 +480,78 @@ class RaspiGUI:
             return [('class:info', "\n  No information available")]
         
     
-    '''
-    Tạo 1 hàm để hiển thị 1 khung cho command
-    Ý tưởng là nếu cái selected item = logs thì nó sẽ ra 1 cái giao diêjn khác
-
-    '''
-    '''
-    def cmd_log(self):
-        print("Hàm cmd_log() đã được gọi")  # Kiểm tra xem có chạy vào đây không
-        # Tạo TextArea nhập lệnh
-        input_logs = TextArea(height=3)
-
-        # Đóng khung vùng nhập lệnh
-        frame_input_logs = Frame(input_logs, title="CMD")
-
-        info_window = Window(FormattedTextControl(self.create_info_content), width=None)
-        
-        info_frame = Frame(info_window, title="Information")
-
-        logs_frame = HSplit([info_frame,frame_input_logs])
-
-        return logs_frame
-    '''
-
-
-    '''
-    def create_info_content(self):
-        self.menu_window = Window(FormattedTextControl(self.create_menu_content), width=10)
-        side_window = Window(FormattedTextControl("Additional"), width=12)
-
-        selectable_items = self.get_selectable_items()
-        selected_key = selectable_items[self.selected_item]
-
-        if selected_key == "Quit":
-            logo = self.settings_data.get("Quit", "\n  No information available")
-            term_size = os.get_terminal_size()
-            term_width = term_size.columns - 28
-            fixed_info_height = 0
-            logo_lines = logo.splitlines()
-            num_logo_lines = len(logo_lines)
-            pad_top = 0
-            centered_lines = []
-            for _ in range(pad_top):
-                centered_lines.append(('', '\n'))
-            for line in logo_lines:
-                centered_lines.append(('class:info', line.center(term_width)))
-            info_window = Window(FormattedTextControl(centered_lines), width=None)
-            return Frame(info_window, title="Information")
-
-        elif selected_key == "SControl":
-            content = []
-            content.append(('class:info.title', f"\n  {selected_key} Settings:\n\n"))
-            data = self.settings_data["SControl"]
-            for i, item in enumerate(data):
-                if self.selected_info == i and self.mode == 'info':
-                    key_style = 'class:info.selected'
-                    value_style = 'class:info.selected'
-                else:
-                    key_style = 'class:key'
-                    value_style = 'class:value'
-                content.append((key_style, f"  {item['key']}: "))
-                content.append((value_style, f"{item['value']}\n"))
-            if self.selected_info == len(data) and self.mode == 'info':
-                apply_style = 'class:info.selected'
-            else:
-                apply_style = 'class:info'
-            term_size = os.get_terminal_size()
-            term_width = term_size.columns - 28
-            apply_text = "[ Apply ]".center(term_width)
-            content.append((apply_style, apply_text + "\n"))
-            info_window = Window(FormattedTextControl(content), width=None)
-            return Frame(info_window, title="Information")
-
-        elif selected_key == "Logs":
-            # Tạo nội dung thông tin Logs
-            content = []
-            content.append(('class:info.title', f"\n  {selected_key} Settings:\n\n"))
-            data = self.settings_data["Logs"]
-            for i, item in enumerate(data):
-                if self.selected_info == i and self.mode == 'info':
-                    key_style = 'class:info.selected'
-                    value_style = 'class:info.selected'
-                else:
-                    key_style = 'class:key'
-                    value_style = 'class:value'
-                content.append((key_style, f"  {item['key']}: "))
-                content.append((value_style, f"{item['value']}\n"))
-
-            # Tạo Frame cho thông tin Logs
-            self.info_up_window = Window(FormattedTextControl(content), width=None, height=None)
-            self.info_down_frame = Frame(self.info_up_window, title="Log Information")
-
-            # Tạo TextArea cho command input
-            if not hasattr(self, 'log_command_input') or self.log_command_input is None:
-                print("Creating log_command_input")  # Debug
-                self.log_command_input = TextArea(
-                    height=3,
-                    prompt=">>> ",
-                    multiline=False,
-                    accept_handler=self.handle_log_command
-                )
-            self.cmd_frame = Frame(self.log_command_input, title="Command Line", width=None, height=3)
-
-            # Kết hợp info và command input theo chiều dọc trong HSplit
-            info_window = HSplit([
-                self.info_down_frame,
-                self.cmd_frame
-            ], width=None, height=None)
-
-            # Trả về Frame chứa layout Logs
-            return Frame(info_window, title="INFOR", width=None, height=None)
-
-        elif selected_key in self.settings_data:
-            content = []
-            content.append(('class:info.title', f"\n  {selected_key} Settings:\n\n"))
-            data = self.settings_data[selected_key]
-            for item in data:
-                content.append(('class:key', f"  {item['key']}: "))
-                content.append(('class:value', f"{item['value']}\n"))
-            info_window = Window(FormattedTextControl(content), width=None)
-            return Frame(info_window, title="Information")
-
-        else:
-            info_window = Window(FormattedTextControl([('class:info', "\n  No information available")]), width=None)
-            return Frame(info_window, title="Information")
-    '''
+    #Tính giá trị trung bình, xét điều kiện lớn hơn 2 là do bỏ 2 giá trị đầu, kiểm tra những số khác 0 và chỉ lấy trung bình những số đó
+    def avarage (self):
+        a = 0
+        sum = 0
+        for i,value in enumerate(self.output_log_line):
+            if (i > 1) and (value != 0):
+                sum += value
+                a+=1
+            continue
+        return sum/a 
     
 
+    #Tiền xủ lý khi đọc từ file.log về
+    def process_data(self,log_line):                
+        patern = r"C(\d+)-(\d+)"\
+                r".*?\[T: 0\]-\[ADC: (\d+)\]"\
+                r"(?:.*?\[T: 1\]-\[ADC: (\d+)\])?"\
+                r"(?:.*?\[T: 2\]-\[ADC: (\d+)\])?"\
+                r"(?:.*?\[T: 3\]-\[ADC: (\d+)\])?"
+        match = re.search(patern, log_line)
+#patern ở đây là 1 regrex dùng để đối chiếu với 1 hàng trong file log, do mỗi lần ta đọc về từ file.log là ta đọc 1 hàng
+#thì ở đây nó trả về 6 cái (\d+) bao gồm hàng, côt, lần lấy 0,1,2,3
+#match = re.search() sẽ lưu nó vào matchmatch
 
+        if match:
+            self.output_log_line = list(match.groups()) #match.groups() là lấy tất cả những gì có trong match, list() là lưu nó vào 1 biến mới dưới dạng list
+            self.output_log_line = [0 if x is None else x for x in self.output_log_line]
+            self.output_log_line = list(map(int,self.output_log_line))
+            self.sensor_value[self.output_log_line[0]-1][self.output_log_line[1]-1] = self.avarage()
+            #return self.sensor_value
+            self.format_table(self.output_log_line[0],self.output_log_line[1])
+        
+        else:
+            print("Không tìm thấy dữ liệu cảm biến!")
 
+    def send_to_matrix(self):
+        with open("test.log", "r", encoding="utf-8") as file:
+            for log_line in file:
+                if "ADC" in log_line: #kiểm tra trong dòng log đó có kí tự nào là ADC k, nếu có thì cho phép đọc dòng đó vì đó là dòng có giá trị cảm biến
+                    self.process_data(log_line)
+                    time.sleep(1)
+                    #app.invalidate()
+
+    def format_table(self,x,y):
+        self.formatted = []
+        table_str = tabulate(self.sensor_value,tablefmt="grid").split("\n")
+        semaphore = 0
+        row_indx, col_indx = 0,0
+        for i,row in enumerate(table_str):
+            if i % 2 == 0:
+                for char in row:
+                    self.formatted.append(("fg:white",char))
+                self.formatted.append(("fg:white","\n"))
+            if i % 2 != 0:
+                col_indx = 0
+                semaphore = 0
+                for char in row:
+                    if char.isdigit() or char == "." or " ":
+                        if row_indx == (x-1) and col_indx == (y-1):
+                            self.formatted.append(("bg:yellow",char))
+                        else:
+                            self.formatted.append(("fg:white",char))              
+                    if char == "|":
+                        #self.formatted.append(("fg:white",char))
+                        semaphore +=1
+                        if semaphore > 1:
+                            col_indx +=1
+                    # else:
+                    #     self.formatted.append(("fg:white",char))
+                self.formatted.append(("fg:white","\n"))
+                row_indx +=1
+        return self.formatted
 
 
 
@@ -766,7 +720,19 @@ done!
 - Trong file read_log.py
 lỗi phát sinh:
 Khi ta đọc về nhưng nếu giá trị đó cảm biến trả về có 2 lần thôi mà ta so sánh điều kiện có T2 thì nó sẽ lỗi
-
 3/Tìm cách lưu nó vào đâu đó để hiển thị:
-4/Làm sao để hiển thị mỗi giá trị sáng lên khi mỗi lần cập nhật
+Done 
+4/Làm sao để hiển thị mỗi giá trị sáng lên khi mỗi lần cập nhật:
+Viết 1 hàm để truyền vào vị trí nào thì nó thay đổi màu khác, còn các vị trí còn lại thì màu trắng bình thường
+- Mỗi lần cập nhật về thì nó có vị trí rồi,
+- Giờ ở đây là cần 
 '''
+
+
+'''
+Ý tưởng là ta sẽ đưa nó về chuỗi
+'''
+
+
+        
+        

@@ -72,6 +72,37 @@ def send_to_matrix(sensor_value,output):
                 
 
 
-send_to_matrix(sensor_value,output)
 
-print(tabulate(sensor_value,tablefmt="grid"))
+
+# def format_table(self,x,y):
+#     self.formatted = []
+#     table_str = tabulate(sensor_value,tablefmt="grid").split("\n")
+#     semaphore = 0
+#     row_indx, col_indx = 0,0
+#     for i,row in enumerate(table_str):
+#         if i % 2 == 0:
+#             for char in row:
+#                 self.formatted.append(("fg:white",char))
+#             self.formatted.append(("fg:white","\n"))
+#         if i % 2 != 0:
+#             col_indx = 0
+#             semaphore = 0
+#             for char in row:
+#                 if char.isdigit() or char == "." or " ":
+#                     if row_indx == (x-1) and col_indx == (y-1):
+#                         self.formatted.append(("bg:yellow",char))
+#                     else:
+#                         self.formatted.append(("fg:white",char))              
+#                 else:
+#                     self.formatted.append(("fg:white",char))
+#                     semaphore +=1
+#                     if semaphore > 1:
+#                         col_indx +=1
+#             self.formatted.append(("fg:white","\n"))
+#             row_indx +=1
+#     print(f"TABULATE: \n{self.formatted}")
+
+send_to_matrix(sensor_value,output)
+table_str = tabulate(sensor_value,tablefmt="grid").split("\n")
+print(table_str[1][0])
+
