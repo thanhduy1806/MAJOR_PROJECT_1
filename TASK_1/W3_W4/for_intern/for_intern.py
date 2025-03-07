@@ -537,13 +537,13 @@ class RaspiGUI:
                 col_indx = 0
                 semaphore = 0
                 for char in row:
-                    if char.isdigit() or char == "." or " ":
+                    if char.isdigit() or char == "." or char == " ":
                         if row_indx == (x-1) and col_indx == (y-1):
                             self.formatted.append(("bg:yellow",char))
                         else:
-                            self.formatted.append(("fg:white",char))              
+                            self.formatted.append(("fg:green",char))              
                     if char == "|":
-                        #self.formatted.append(("fg:white",char))
+                        self.formatted.append(("fg:white",char))
                         semaphore +=1
                         if semaphore > 1:
                             col_indx +=1
