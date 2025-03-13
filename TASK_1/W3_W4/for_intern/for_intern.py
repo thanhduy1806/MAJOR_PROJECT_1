@@ -18,16 +18,19 @@ class RaspiGUI:
 
     def __init__(self):
         self.sensor_value = [[None]*6 for _ in range(6)]
+        #self.sensor_value = [[str(col).center(15) for col in row] for row in self.sensor_value]
+        #self.sensor_value = [[str(col).ljust(11) for col in row] for row in self.sensor_value]
         self.output_log_line = [0,0,0,0,0,0]
         self.port_buffer = None
         self.formatted = []
         self.kb = KeyBindings()
         self.mode = 'menu'
         self.selected_item = 0
-       
+        self.app = Application(key_bindings=self.kb, full_screen=True)
         self.container = self.get_container()
 
         self.text_from_command = "NO VALUE"
+       
 
         self.selected_info = 0
         self.data_input_log = 0
@@ -291,6 +294,7 @@ class RaspiGUI:
             self.container = self.get_container()
             self.layout.container = self.container
             event.app.invalidate()
+            
 
         @self.kb.add('enter')
         def _(event):
@@ -481,15 +485,15 @@ class RaspiGUI:
         
     
     #Tính giá trị trung bình, xét điều kiện lớn hơn 2 là do bỏ 2 giá trị đầu, kiểm tra những số khác 0 và chỉ lấy trung bình những số đó
-    def avarage (self):
+    def DAC_avarage (self):
         a = 0
         sum = 0
         for i,value in enumerate(self.output_log_line):
             if (i > 1) and (value != 0):
-                sum += value
+                sum += value*3.3/16383
                 a+=1
             continue
-        return sum/a 
+        return f"{sum/a:.2f}" 
     
 
     #Tiền xủ lý khi đọc từ file.log về
@@ -508,7 +512,7 @@ class RaspiGUI:
             self.output_log_line = list(match.groups()) #match.groups() là lấy tất cả những gì có trong match, list() là lưu nó vào 1 biến mới dưới dạng list
             self.output_log_line = [0 if x is None else x for x in self.output_log_line]
             self.output_log_line = list(map(int,self.output_log_line))
-            self.sensor_value[self.output_log_line[0]-1][self.output_log_line[1]-1] = self.avarage()
+            self.sensor_value[self.output_log_line[0]-1][self.output_log_line[1]-1] = self.DAC_avarage()
             #return self.sensor_value
             self.format_table(self.output_log_line[0],self.output_log_line[1])
         
@@ -525,6 +529,7 @@ class RaspiGUI:
 
     def format_table(self,x,y):
         self.formatted = []
+        #self.sensor_value = [[str(col).ljust(15) for col in row] for row in self.sensor_value]
         table_str = tabulate(self.sensor_value,tablefmt="grid").split("\n")
         semaphore = 0
         row_indx, col_indx = 0,0
@@ -566,78 +571,157 @@ class RaspiGUI:
 
     def handle_log_command(self, buffer):
         self.text_from_command = buffer.text.strip()
-        # if command:
-        #     try:
-        #         # Ví dụ các lệnh xử lý
-        #         if command.lower() == "clear errors":
-        #             self.settings_data["Logs"][1]["value"] = "0"  # Reset Errors
-        #         elif command.lower().startswith("set level "):
-        #             level = command.split(" ", 2)[2].upper()
-        #             if level in ["DEBUG", "INFO", "WARNING", "ERROR"]:
-        #                 self.settings_data["Logs"][0]["value"] = level
-        #         elif command.lower() == "show latest":
-        #             latest_log = self.get_latest_log()
-        #             self.log_command_input.text = latest_log  # Hiển thị log mới nhất
-        #         elif command.lower() == "view log":
-        #             try:
-        #                 with open("notice.log", "r", encoding="utf-8") as f:
-        #                     self.log_command_input.text = f.read()[:100]  # Giới hạn 100 ký tự
-        #             except Exception as e:
-        #                 self.log_command_input.text = f"Error: {e}"
+        if self.text_from_command:
+            try:
+                # Ví dụ các lệnh xử lý
+                if self.text_from_command.lower() == "clear errors":
+                    self.settings_data["Logs"][1]["value"] = "0"  # Reset Errors
+                elif self.text_from_command.lower().startswith("set level "):
+                    level = self.text_from_command.split(" ", 2)[2].upper()
+                    if level in ["DEBUG", "INFO", "WARNING", "ERROR"]:
+                        self.settings_data["Logs"][0]["value"] = level
+                elif self.text_from_command.lower() == "show latest":
+                    latest_log = self.get_latest_log()
+                    self.log_command_input.text = latest_log  # Hiển thị log mới nhất
+                elif self.text_from_command.lower() == "view log":
+                    try:
+                        with open("notice.log", "r", encoding="utf-8") as f:
+                            self.log_command_input.text = f.read()[:100]  # Giới hạn 100 ký tự
+                    except Exception as e:
+                        self.log_command_input.text = f"Error: {e}"
 
-        #         # Lưu thay đổi vào file Logs.json
-        #         with open("Logs.json", "w", encoding="utf-8") as f:
-        #             json.dump(self.settings_data["Logs"], f, indent=4, ensure_ascii=False)
+                # Lưu thay đổi vào file Logs.json
+                with open("Logs.json", "w", encoding="utf-8") as f:
+                    json.dump(self.settings_data["Logs"], f, indent=4, ensure_ascii=False)
 
-        #         # Nếu không phải lệnh "show latest", xóa input sau khi xử lý
-        #         if not command.lower() == "show latest":
-        #             self.log_command_input.text = ""
-        #     except Exception as e:
-        #         self.log_command_input.text = f"Error: {str(e)}"
+                # Nếu không phải lệnh "show latest", xóa input sau khi xử lý
+                if not self.text_from_command.lower() == "show latest":
+                    self.log_command_input.text = ""
+            except Exception as e:
+                self.log_command_input.text = f"Error: {str(e)}"
 
         return True  # Giữ TextArea hoạt động
 
+    '''
+    Vấn đề lỗi nằm ở việc tạo cái cửa sổ cmd, cứ mỗi lần nó tạo nó sẽ đẩy ghi đè 1 hàng
+    Đã tìm được lí do lỗi ghi đè: do là khi ta ấn nút mũi tên lên/ xuống thì nó sẽ ngay lập tức vẽ lại mà hình, nên là nó sẽ
+    vẽ lại màn hình trước xong nó mới kiểm tra việc tạo bảng cmd terminal nên là khi tạo ra cái terminal đó nó sẽ bị đè lên cái sẵn có
+    mà không được update lại, khi ta nhấn các phím lên xuống lần nữa thì nó có vẽ lại nhưng mà cái buffer của nó vẫn còn lưu cái dữ liệu cũ
+    nên nó sẽ bị ghi đè lên cái dữ liệu cũ, nên ta cần phải xóa cái cửa sổ cũ đi trước khi tạo cái mới
+    '''
+    # def get_container(self):
+    #     header = self.create_header()
+
+    #     self.menu_window = Window(FormattedTextControl(self.create_menu_content), width=10)
+    #     side_window = Window(FormattedTextControl("Additional"), width=12)
+
+        
+
+        
+    #     # Tạo cửa sổ hiển thị thông tin Logs
+    #     self.info_up_window = Window(FormattedTextControl(self.create_info_content), width=None, height=None)  # Giới hạn chiều cao
+      
+    #     if (self.selected_item == 4):
+            
+
     
+    #         #Tạo TextArea cho command input
+    #         if not hasattr(self, 'log_command_input'):
+    #             print("Creating log_command_input")  # Debug
+    #             self.info_window = Window(FormattedTextControl(" "), width=None)
+    #             self.app.invalidate()
+    #             self.log_command_input = TextArea(
+    #                 height=3,
+    #                 prompt=">>> ",
+    #                 multiline=False,
+    #                 accept_handler=self.handle_log_command
+    #             )
+            
+    #          #Tạo TextArea cho command input
+           
+            # print("Creating log_command_input")  # Debug
+            # self.log_command_input = TextArea(
+            #     height=3,
+            #     prompt=">>> ",
+            #     multiline=False,
+            #     accept_handler=self.handle_log_command
+            # )
+
+            
+
+
+
+    #         self.cmd_frame = Frame(self.log_command_input, title="Command Line", width=None, height=3)
+    #         text_input = Window(FormattedTextControl(lambda: f"BAN DA NHAP: {self.text_from_command}"),width=None,height=None)
+            
+    #                 # Kết hợp info và command input theo chiều dọc
+    #         self.info_window = HSplit([
+    #             self.info_up_window,
+    #             text_input,
+    #             self.cmd_frame
+    #         ], width=None, height=None)  # Đảm bảo chiều rộng tự động
+                    
+    #         self.info_frame = Frame(self.info_window, title="Logs",width=None, height=None)
+            
+    #     else:
+    #         self.info_window = Window(FormattedTextControl(self.create_info_content), width=None)
+    #         self.info_frame = Frame(self.info_window, title = lambda: f"{self.menu_list[self.selected_item]}")
+        
+    #     # self.info_window = Window(FormattedTextControl(self.create_info_content), width=None)
+    #     # self.info_frame = Frame(self.info_window, title = lambda: f"{self.menu_list[self.selected_item]}")
+
+
+
+    #     main_content = VSplit([
+    #         Frame(self.menu_window, title="Menu"),
+    #         self.info_frame,
+    #         Frame(side_window, title="Data")
+    #     ])
+
+    #     log_window = Window(FormattedTextControl(lambda: f">>>ITEM: {self.selected_item}"), height=1, style='class:log')
+
+    #     status_bar = VSplit([
+    #         Window(FormattedTextControl("↑↓: Navigate | Enter: Select | Esc: Back | Ctrl+C: Exit"), style='class:status'),
+    #         Window(FormattedTextControl("--------.com"), align=WindowAlign.RIGHT, style='#1313c2')
+    #     ], height=1)
+        
+    #     self.app.invalidate()
+    #     return HSplit([header, main_content, Frame(log_window), status_bar])
+    
+
     def get_container(self):
         header = self.create_header()
-
         self.menu_window = Window(FormattedTextControl(self.create_menu_content), width=10)
         side_window = Window(FormattedTextControl("Additional"), width=12)
 
-        
+        self.info_up_window = Window(FormattedTextControl(self.create_info_content), width=None, height=None)
 
-        
-        # Tạo cửa sổ hiển thị thông tin Logs
-        self.info_up_window = Window(FormattedTextControl(self.create_info_content), width=None, height=None)  # Giới hạn chiều cao
-      
-        if (self.selected_item == 4):
-            #Tạo TextArea cho command input
-            if not hasattr(self, 'log_command_input'):
-                print("Creating log_command_input")  # Debug
+        if self.selected_item == 4:
+            # Kiểm tra nếu `log_command_input` đã tồn tại, xóa nó trước
+            if not hasattr(self, 'cmd_frame'):
+                self.cmd_frame = None  
+
+                # Sau đó mới tạo lại từ đầu
                 self.log_command_input = TextArea(
                     height=3,
                     prompt=">>> ",
                     multiline=False,
                     accept_handler=self.handle_log_command
                 )
+
             self.cmd_frame = Frame(self.log_command_input, title="Command Line", width=None, height=3)
-            text_input = Window(FormattedTextControl(lambda: f"BAN DA NHAP: {self.text_from_command}"),width=None,height=None)
-                    # Kết hợp info và command input theo chiều dọc
+            text_input = Window(FormattedTextControl(lambda: f"BAN DA NHAP: {self.text_from_command}"), width=None, height=None)
+
             self.info_window = HSplit([
-                self.info_up_window,
+                #self.info_up_window,
                 text_input,
                 self.cmd_frame
-            ], width=None, height= None)  # Đảm bảo chiều rộng tự động
-                    
-            self.info_frame = Frame(self.info_window, title="Logs",width=None, height=None)
-        
+            ], width=None, height=None)
+
+            self.info_frame = Frame(self.info_window, title="Logs", width=None, height=None)
         else:
             self.info_window = Window(FormattedTextControl(self.create_info_content), width=None)
-            self.info_frame = Frame(self.info_window, title = lambda: f"{self.menu_list[self.selected_item]}")
-        
-
-
-
+            self.info_frame = Frame(self.info_window, title=lambda: f"{self.menu_list[self.selected_item]}")
 
         main_content = VSplit([
             Frame(self.menu_window, title="Menu"),
@@ -653,7 +737,12 @@ class RaspiGUI:
         ], height=1)
 
         return HSplit([header, main_content, Frame(log_window), status_bar])
-    
+
+
+
+
+
+
 
     #Ở đây vấn đề là do ta gọi cái self.get_container để truyền chỉ 1 lần đầu tiên ta run() nên nó không thể cặp nhật trạng thái bảng dù cho biến selected_item có thay đổi
     #biến đó nó thay đổi thì khi ta dùng event.app.invalidate() thì nó chỉ vẽ lại nội dung thôi còn cái mà layout cái bảng từ self.get_container vẫn cố định do nó đã truyền cố định lúc đầu
@@ -663,7 +752,7 @@ class RaspiGUI:
     
     def run(self):
         self.layout = Layout(container=self.get_container())
-        app = Application(
+        self.app = Application(
             layout=self.layout,
             key_bindings=self.kb,
             style=self.style,
@@ -672,7 +761,7 @@ class RaspiGUI:
             refresh_interval=1 
         )
         
-        app.run()
+        self.app.run()
     
 def main():
     gui = RaspiGUI()
@@ -725,13 +814,15 @@ Done
 4/Làm sao để hiển thị mỗi giá trị sáng lên khi mỗi lần cập nhật:
 Viết 1 hàm để truyền vào vị trí nào thì nó thay đổi màu khác, còn các vị trí còn lại thì màu trắng bình thường
 - Mỗi lần cập nhật về thì nó có vị trí rồi,
-- Giờ ở đây là cần 
+- Thì giờ từ vị trí đó nó sẽ chèn cái thêm cái trạng thái màu dô, còn các vị trí khác nó lại bình thường
+ý là ở đây mỗi lần nó gọi tới hàm để highlight thì nó lại gán trạng thái màu toàn bộ lại từ đầu
+---->Done
+==> Hoàn thành việc hiển thị
+Còn vấn đề tồn đọng là làm sao để nó lưu giữ vị trí dòng đọc hiện tại, với lại file liên tục được mở để đọc thì có vấn đề gì k
 '''
 
 
-'''
-Ý tưởng là ta sẽ đưa nó về chuỗi
-'''
+
 
 
         
