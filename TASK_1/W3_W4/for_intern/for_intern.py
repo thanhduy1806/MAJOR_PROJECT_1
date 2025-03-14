@@ -132,8 +132,15 @@ class RaspiGUI:
 
         threading.Thread(target=self.update_utils_data, daemon=True).start()
 
+        self.recommended_command = [
+            ["clear: to clear the screen"],
+            ["get_temp: to get the temperature of the CPU"],
+            ["get_time: to get the current time"]
+        ]
         
-        
+         
+        self.create_info_log =" "
+
         #TẠO LUỒNG ĐỂ CHẠY THỜI GIAN
         time_thread = threading.Thread(target=self.load_time, daemon=True)
         time_thread.start()
@@ -530,7 +537,7 @@ class RaspiGUI:
     def format_table(self,x,y):
         self.formatted = []
         #self.sensor_value = [[str(col).ljust(15) for col in row] for row in self.sensor_value]
-        table_str = tabulate(self.sensor_value,tablefmt="grid").split("\n")
+        table_str = tabulate(self.sensor_value,tablefmt="grid",floatfmt=".2f").split("\n")
         semaphore = 0
         row_indx, col_indx = 0,0
         for i,row in enumerate(table_str):
@@ -568,35 +575,23 @@ class RaspiGUI:
 
 
 
-
+    #HÀM NÀY DÙNG ĐỂ XỬ LÝ LỆNH NHẬN TỪ COMMAND LINE, HOẠT ĐỘNG DỰA TRÊN VIỆC LẤY BUFFER TỪ WINDOW
     def handle_log_command(self, buffer):
         self.text_from_command = buffer.text.strip()
         if self.text_from_command:
             try:
                 # Ví dụ các lệnh xử lý
-                if self.text_from_command.lower() == "clear errors":
-                    self.settings_data["Logs"][1]["value"] = "0"  # Reset Errors
-                elif self.text_from_command.lower().startswith("set level "):
-                    level = self.text_from_command.split(" ", 2)[2].upper()
-                    if level in ["DEBUG", "INFO", "WARNING", "ERROR"]:
-                        self.settings_data["Logs"][0]["value"] = level
-                elif self.text_from_command.lower() == "show latest":
-                    latest_log = self.get_latest_log()
-                    self.log_command_input.text = latest_log  # Hiển thị log mới nhất
-                elif self.text_from_command.lower() == "view log":
-                    try:
-                        with open("notice.log", "r", encoding="utf-8") as f:
-                            self.log_command_input.text = f.read()[:100]  # Giới hạn 100 ký tự
-                    except Exception as e:
-                        self.log_command_input.text = f"Error: {e}"
+                if self.text_from_command.lower() == "help":
+                    if not hasattr(self, 'create_info_log_raw'):
+                        #self.create_info_log = None
+                        self.create_info_log_raw = []
+                        for data in self.recommended_command:
+                            self.create_info_log_raw.append("".join(data)+"\n")
+                    self.create_info_log = "".join(self.create_info_log_raw)
+                if self.text_from_command.lower() == "clear":
+                    self.create_info_log = None
 
-                # Lưu thay đổi vào file Logs.json
-                with open("Logs.json", "w", encoding="utf-8") as f:
-                    json.dump(self.settings_data["Logs"], f, indent=4, ensure_ascii=False)
-
-                # Nếu không phải lệnh "show latest", xóa input sau khi xử lý
-                if not self.text_from_command.lower() == "show latest":
-                    self.log_command_input.text = ""
+                
             except Exception as e:
                 self.log_command_input.text = f"Error: {str(e)}"
 
@@ -694,9 +689,10 @@ class RaspiGUI:
         self.menu_window = Window(FormattedTextControl(self.create_menu_content), width=10)
         side_window = Window(FormattedTextControl("Additional"), width=12)
 
-        self.info_up_window = Window(FormattedTextControl(self.create_info_content), width=None, height=None)
+        
 
         if self.selected_item == 4:
+            self.info_up_window = Window(FormattedTextControl(self.create_info_log), width=None, height=None)
             # Kiểm tra nếu `log_command_input` đã tồn tại, xóa nó trước
             if not hasattr(self, 'cmd_frame'):
                 self.cmd_frame = None  
@@ -713,13 +709,14 @@ class RaspiGUI:
             text_input = Window(FormattedTextControl(lambda: f"BAN DA NHAP: {self.text_from_command}"), width=None, height=None)
 
             self.info_window = HSplit([
-                #self.info_up_window,
-                text_input,
+                self.info_up_window,
+                #text_input,
                 self.cmd_frame
             ], width=None, height=None)
 
             self.info_frame = Frame(self.info_window, title="Logs", width=None, height=None)
         else:
+            #self.info_up_window = Window(FormattedTextControl(self.create_info_content), width=None, height=None)
             self.info_window = Window(FormattedTextControl(self.create_info_content), width=None)
             self.info_frame = Frame(self.info_window, title=lambda: f"{self.menu_list[self.selected_item]}")
 
