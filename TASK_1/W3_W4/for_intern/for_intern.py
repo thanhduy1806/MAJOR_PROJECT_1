@@ -133,9 +133,9 @@ class RaspiGUI:
         threading.Thread(target=self.update_utils_data, daemon=True).start()
 
         self.recommended_command = [
-            ["clear: to clear the screen"],
-            ["get_temp: to get the temperature of the CPU"],
-            ["get_time: to get the current time"]
+            "clear: to clear the screen",
+            "get_temp: to get the temperature of the CPU",
+            "get_time: to get the current time"
         ]
         
          
@@ -566,7 +566,15 @@ class RaspiGUI:
         return self.formatted
 
 
-
+    #GHI VAO FILE COMMAND
+    def write_command(self,str):
+        with open("command.txt" , "a", encoding="utf-8") as file:
+            file.write(str + "\n")
+        
+    #DOC TU FILE COMMAND
+    def read_command(self):
+        with open("command.txt","r",encoding="utf-8") as file:
+            return file.readlines()
 
 
 
@@ -582,12 +590,26 @@ class RaspiGUI:
             try:
                 # Ví dụ các lệnh xử lý
                 if self.text_from_command.lower() == "help":
-                    if not hasattr(self, 'create_info_log_raw'):
-                        #self.create_info_log = None
-                        self.create_info_log_raw = []
-                        for data in self.recommended_command:
-                            self.create_info_log_raw.append("".join(data)+"\n")
-                    self.create_info_log = "".join(self.create_info_log_raw)
+                    # if not hasattr(self, 'create_info_log_raw'):
+                    #     #self.create_info_log = None
+                    #     self.create_info_log_raw = []
+                    #     for data in self.recommended_command:
+                    #         self.create_info_log_raw.append("".join(data)+"\n")
+                    # self.create_info_log = "".join(self.create_info_log_raw)
+                    self.write_command(">>>help")
+                    for i in self.recommended_command:
+                        self.write_command(str(i))
+                    self.create_info_log_raw = []
+                    current_line = 0
+                    with open("command.txt", "r", encoding="utf-8") as file:
+                        for command in file:
+                            current_line +=1
+                            self.create_info_log_raw.append("".join(command)+"\n")
+                    #cửa sổ chỉ có 6 dòng nên 2 dòng bên dưới giúp hiển thị ra 6 dòng mới nhất trong file command.txt
+                    for i in range(1,7):
+                        self.create_info_log += self.create_info_log_raw[current_line-7+i]
+
+
                 if self.text_from_command.lower() == "clear":
                     self.create_info_log = None
 
@@ -604,84 +626,6 @@ class RaspiGUI:
     mà không được update lại, khi ta nhấn các phím lên xuống lần nữa thì nó có vẽ lại nhưng mà cái buffer của nó vẫn còn lưu cái dữ liệu cũ
     nên nó sẽ bị ghi đè lên cái dữ liệu cũ, nên ta cần phải xóa cái cửa sổ cũ đi trước khi tạo cái mới
     '''
-    # def get_container(self):
-    #     header = self.create_header()
-
-    #     self.menu_window = Window(FormattedTextControl(self.create_menu_content), width=10)
-    #     side_window = Window(FormattedTextControl("Additional"), width=12)
-
-        
-
-        
-    #     # Tạo cửa sổ hiển thị thông tin Logs
-    #     self.info_up_window = Window(FormattedTextControl(self.create_info_content), width=None, height=None)  # Giới hạn chiều cao
-      
-    #     if (self.selected_item == 4):
-            
-
-    
-    #         #Tạo TextArea cho command input
-    #         if not hasattr(self, 'log_command_input'):
-    #             print("Creating log_command_input")  # Debug
-    #             self.info_window = Window(FormattedTextControl(" "), width=None)
-    #             self.app.invalidate()
-    #             self.log_command_input = TextArea(
-    #                 height=3,
-    #                 prompt=">>> ",
-    #                 multiline=False,
-    #                 accept_handler=self.handle_log_command
-    #             )
-            
-    #          #Tạo TextArea cho command input
-           
-            # print("Creating log_command_input")  # Debug
-            # self.log_command_input = TextArea(
-            #     height=3,
-            #     prompt=">>> ",
-            #     multiline=False,
-            #     accept_handler=self.handle_log_command
-            # )
-
-            
-
-
-
-    #         self.cmd_frame = Frame(self.log_command_input, title="Command Line", width=None, height=3)
-    #         text_input = Window(FormattedTextControl(lambda: f"BAN DA NHAP: {self.text_from_command}"),width=None,height=None)
-            
-    #                 # Kết hợp info và command input theo chiều dọc
-    #         self.info_window = HSplit([
-    #             self.info_up_window,
-    #             text_input,
-    #             self.cmd_frame
-    #         ], width=None, height=None)  # Đảm bảo chiều rộng tự động
-                    
-    #         self.info_frame = Frame(self.info_window, title="Logs",width=None, height=None)
-            
-    #     else:
-    #         self.info_window = Window(FormattedTextControl(self.create_info_content), width=None)
-    #         self.info_frame = Frame(self.info_window, title = lambda: f"{self.menu_list[self.selected_item]}")
-        
-    #     # self.info_window = Window(FormattedTextControl(self.create_info_content), width=None)
-    #     # self.info_frame = Frame(self.info_window, title = lambda: f"{self.menu_list[self.selected_item]}")
-
-
-
-    #     main_content = VSplit([
-    #         Frame(self.menu_window, title="Menu"),
-    #         self.info_frame,
-    #         Frame(side_window, title="Data")
-    #     ])
-
-    #     log_window = Window(FormattedTextControl(lambda: f">>>ITEM: {self.selected_item}"), height=1, style='class:log')
-
-    #     status_bar = VSplit([
-    #         Window(FormattedTextControl("↑↓: Navigate | Enter: Select | Esc: Back | Ctrl+C: Exit"), style='class:status'),
-    #         Window(FormattedTextControl("--------.com"), align=WindowAlign.RIGHT, style='#1313c2')
-    #     ], height=1)
-        
-    #     self.app.invalidate()
-    #     return HSplit([header, main_content, Frame(log_window), status_bar])
     
 
     def get_container(self):
@@ -761,6 +705,7 @@ class RaspiGUI:
         self.app.run()
     
 def main():
+
     gui = RaspiGUI()
     gui.run()
 
@@ -797,7 +742,6 @@ DONE
 
 
 '''
-TASK MỚI:
 Hiển thi 1 ma trận dữ liệu 6x6 gửi ra từ cảm biến trên cửa sổ tracking
 1/Tìm hiểu cái dạng file ghi cảm biến và đọc về
 done!
@@ -819,7 +763,10 @@ Còn vấn đề tồn đọng là làm sao để nó lưu giữ vị trí dòng
 '''
 
 
-
+'''
+Chỉnh lại cái cửa sổ logs:
+- Khi nhập lệnh 
+'''
 
 
         

@@ -1,0 +1,53 @@
+>>>help
+>>>help
+['clear: to clear the screen']
+['get_temp: to get the temperature of the CPU']
+['get_time: to get the current time']
+>>>help
+['clear: to clear the screen']
+['get_temp: to get the temperature of the CPU']
+['get_time: to get the current time']
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
