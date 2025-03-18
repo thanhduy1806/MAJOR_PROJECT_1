@@ -29,11 +29,15 @@ class RaspiGUI:
         self.app = Application(key_bindings=self.kb, full_screen=True)
         self.container = self.get_container()
 
+        self.current_line = 0 #Dòng hiện tại trong file command
         self.text_from_command = "NO VALUE"
+        self.create_info_log_cmd =""
        
+        self.current_line = 0
 
         self.selected_info = 0
         self.data_input_log = 0
+
         self.menu_items = [
             "────────────────",
             "  Status    ",
@@ -271,6 +275,15 @@ class RaspiGUI:
                 
             elif self.mode == 'info':
                 selectable_items = self.get_selectable_items()
+                if selectable_items[self.selected_item] == "Logs":
+                    self.current_line -= 1
+                    os_line = os.get_terminal_size().lines
+                    start_idx = max(0, self.current_line - (os_line - 12))
+                    self.create_info_log_cmd = ""
+                    
+                    for i in range(start_idx-1,self.current_line):
+                        self.create_info_log_cmd += self.create_info_log_raw[i]
+                        
                 if selectable_items[self.selected_item] == "SControl":
                     if self.selected_info > 0:
                         self.selected_info -= 1
@@ -291,6 +304,8 @@ class RaspiGUI:
                 self.info_frame.title = selectable_items[self.selected_item]
             elif self.mode == 'info':
                 selectable_items = self.get_selectable_items()
+                
+
                 if selectable_items[self.selected_item] == "SControl":
                     max_info = len(self.settings_data["SControl"])  # "Apply" index = len(data)
                     self.selected_info = min(max_info, self.selected_info + 1)
@@ -344,6 +359,8 @@ class RaspiGUI:
                             pass
                         self.mode = 'menu'
                         event.app.layout.focus(self.menu_window)
+                if selected_key == "Logs":
+                    self.create_info_log= self.create_info_log_cmd
             self.container = self.get_container()
             self.layout.container = self.container            
             event.app.invalidate()
@@ -570,12 +587,20 @@ class RaspiGUI:
     def write_command(self,str):
         with open("command.txt" , "a", encoding="utf-8") as file:
             file.write(str + "\n")
+
+    #GHI VAO FILE COMMAND
+    def write_command_temp(self,str):
+        with open("command_temp.txt" , "a", encoding="utf-8") as file:
+            file.write(str + "\n")
         
     #DOC TU FILE COMMAND
-    def read_command(self):
+    def read_command_temp(self):
         with open("command.txt","r",encoding="utf-8") as file:
             return file.readlines()
 
+    #RESET FILE TẠM
+    with open("command_temp.txt", "w") as file:
+        file.truncate(0)
 
 
 
@@ -597,23 +622,43 @@ class RaspiGUI:
                     #         self.create_info_log_raw.append("".join(data)+"\n")
                     # self.create_info_log = "".join(self.create_info_log_raw)
                     self.write_command(">>>help")
+                    self.write_command_temp(">>>help")
                     for i in self.recommended_command:
                         self.write_command(str(i))
-                    self.create_info_log_raw = []
-                    current_line = 0
-                    with open("command.txt", "r", encoding="utf-8") as file:
-                        for command in file:
-                            current_line +=1
-                            self.create_info_log_raw.append("".join(command)+"\n")
-                    #cửa sổ chỉ có 6 dòng nên 2 dòng bên dưới giúp hiển thị ra 6 dòng mới nhất trong file command.txt
-                    for i in range(1,7):
-                        self.create_info_log += self.create_info_log_raw[current_line-7+i]
+                        self.write_command_temp(str(i))
 
+                    
+                if self.text_from_command.lower() == "hi":
+                    self.write_command(">>>hi")
+                    self.write_command_temp(">>>hi")
+                    self.write_command("hello")
+                    self.write_command_temp("hello")
+                    #self.create_info_log = None
 
                 if self.text_from_command.lower() == "clear":
+                    self.write_command(">>>clear")
+                    self.write_command_temp(">>>clear")
+                    with open("command_temp.txt", "w") as file:
+                        file.truncate(0)
                     self.create_info_log = None
 
+
                 
+                self.create_info_log_raw = []
+                self.current_line = 0
+                with open("command_temp.txt", "r", encoding="utf-8") as file:
+                    for command in file:
+                        self.current_line +=1
+                        self.create_info_log_raw.append("".join(command))
+
+                os_line = os.get_terminal_size().lines
+                start_idx = max(0, self.current_line - (os_line - 12))
+                self.create_info_log_cmd = ""
+
+                for i in range(start_idx,self.current_line):
+                    self.create_info_log_cmd += self.create_info_log_raw[i]
+                
+
             except Exception as e:
                 self.log_command_input.text = f"Error: {str(e)}"
 
@@ -636,6 +681,7 @@ class RaspiGUI:
         
 
         if self.selected_item == 4:
+            
             self.info_up_window = Window(FormattedTextControl(self.create_info_log), width=None, height=None)
             # Kiểm tra nếu `log_command_input` đã tồn tại, xóa nó trước
             if not hasattr(self, 'cmd_frame'):
@@ -661,6 +707,7 @@ class RaspiGUI:
             self.info_frame = Frame(self.info_window, title="Logs", width=None, height=None)
         else:
             #self.info_up_window = Window(FormattedTextControl(self.create_info_content), width=None, height=None)
+            
             self.info_window = Window(FormattedTextControl(self.create_info_content), width=None)
             self.info_frame = Frame(self.info_window, title=lambda: f"{self.menu_list[self.selected_item]}")
 
