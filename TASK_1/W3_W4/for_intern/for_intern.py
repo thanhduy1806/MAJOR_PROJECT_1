@@ -34,6 +34,7 @@ class RaspiGUI:
         self.create_info_log_cmd =""
        
         self.current_line = 0
+        self.save_current_line = 0
 
         self.selected_info = 0
         self.data_input_log = 0
@@ -266,6 +267,8 @@ class RaspiGUI:
         #viết một hàm với sự kiện là nó sẽ thực hiện nếu ta bấm phím mũi tên lênlên
         @self.kb.add('up')
         def _(event):
+            
+
             if self.mode == 'menu':
                 selectable_count = sum(1 for item in self.menu_items if not self.is_divider(item))
                 self.selected_item = max(0, self.selected_item - 1)
@@ -276,26 +279,46 @@ class RaspiGUI:
             elif self.mode == 'info':
                 selectable_items = self.get_selectable_items()
                 if selectable_items[self.selected_item] == "Logs":
+                    #if hasattr(self.log_command_input, "buffer"):
+
+                        # if event.app.layout.has_focus(self.log_command_input):
                     self.current_line -= 1
-                    os_line = os.get_terminal_size().lines
-                    start_idx = max(0, self.current_line - (os_line - 12))
-                    self.create_info_log_cmd = ""
-                    
-                    for i in range(start_idx-1,self.current_line):
-                        self.create_info_log_cmd += self.create_info_log_raw[i]
+                    if self.current_line <= 0:
+                        self.current_line = 1
+                    if self.current_line > 0: 
                         
+                        os_line = os.get_terminal_size().lines
+                        start_idx = max(0, self.current_line - (os_line - 12))
+                        self.create_info_log_cmd = ""
+                                        
+                        for i in range(start_idx,self.current_line):
+                            self.create_info_log_cmd += self.create_info_log_raw[i]
+                        #event.app.invalidate()
+                        self.create_info_log = None
+                        self.create_info_log = self.create_info_log_cmd
+
                 if selectable_items[self.selected_item] == "SControl":
                     if self.selected_info > 0:
                         self.selected_info -= 1
                         current_field = self.settings_data["SControl"][self.selected_info]
                         if current_field["key"] != "Port":
                             self.port_buffer = None
+            # self.container = self.get_container()
+            # self.layout.container = self.container
+            # event.app.invalidate()
+            old_container = self.container
             self.container = self.get_container()
-            self.layout.container = self.container
-            event.app.invalidate()
 
+            if self.container != old_container:
+                self.layout.container = self.container  # Cập nhật layout nếu có thay đổi
+
+            # Cập nhật giao diện
+            event.app.invalidate()
+              
         @self.kb.add('down')
         def _(event):
+            
+
             if self.mode == 'menu':
                 selectable_count = sum(1 for item in self.menu_items if not self.is_divider(item))
                 self.selected_item = min(selectable_count - 1, self.selected_item + 1)
@@ -305,6 +328,25 @@ class RaspiGUI:
             elif self.mode == 'info':
                 selectable_items = self.get_selectable_items()
                 
+                if selectable_items[self.selected_item] == "Logs":
+
+                    #if event.app.layout.has_focus(self.log_command_input):
+                    self.current_line += 1
+                    if self.current_line > self.save_current_line:
+                        self.current_line = self.save_current_line
+
+                    
+                    if self.current_line <= self.save_current_line:
+                                
+                        os_line = os.get_terminal_size().lines
+                        start_idx = max(0, self.current_line - (os_line - 12))
+                        self.create_info_log_cmd = ""
+                                        
+                        for i in range(start_idx,self.current_line):
+                            self.create_info_log_cmd += self.create_info_log_raw[i]
+                        self.create_info_log = None
+                        self.create_info_log = self.create_info_log_cmd
+                    
 
                 if selectable_items[self.selected_item] == "SControl":
                     max_info = len(self.settings_data["SControl"])  # "Apply" index = len(data)
@@ -313,9 +355,18 @@ class RaspiGUI:
                         current_field = self.settings_data["SControl"][self.selected_info]
                         if current_field["key"] != "Port":
                             self.port_buffer = None
+            # self.container = self.get_container()
+            # self.layout.container = self.container
+            # event.app.invalidate()
+            old_container = self.container
             self.container = self.get_container()
-            self.layout.container = self.container
+
+            if self.container != old_container:
+                self.layout.container = self.container  # Cập nhật layout nếu có thay đổi
+
+            # Cập nhật giao diện
             event.app.invalidate()
+            
             
 
         @self.kb.add('enter')
@@ -649,6 +700,7 @@ class RaspiGUI:
                 with open("command_temp.txt", "r", encoding="utf-8") as file:
                     for command in file:
                         self.current_line +=1
+                        self.save_current_line = self.current_line
                         self.create_info_log_raw.append("".join(command))
 
                 os_line = os.get_terminal_size().lines
