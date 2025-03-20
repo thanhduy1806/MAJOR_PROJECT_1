@@ -672,3 +672,594 @@ get_time: to get the current time
 clear: to clear the screen
 get_temp: to get the temperature of the CPU
 get_time: to get the current time
+>>>hi
+hello
+>>>hi
+hello
+>>>hi
+hello
+>>>hi
+hello
+>>>hi
+hello
+>>>hi
+hello
+>>>hi
+hello
+>>>hi
+hello
+>>>hi
+hello
+>>>hi
+hello
+>>>hi
+hello
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>hi
+hello
+>>>hi
+hello
+>>>hi
+hello
+>>>hi
+hello
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>hi
+hello
+>>>hi
+hello
+>>>hi
+hello
+>>>hi
+hello
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>hi
+hello
+>>>hi
+hello
+>>>hi
+hello
+>>>clear
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>hi
+hello
+>>>hi
+hello
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>hi
+hello
+>>>hi
+hello
+>>>hi
+hello
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>hi
+hello
+>>>hi
+hello
+>>>hi
+hello
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>hi
+hello
+>>>hi
+hello
+>>>hi
+hello
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>hi
+hello
+>>>hi
+hello
+>>>hi
+hello
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>hi
+hello
+>>>hi
+hello
+>>>hi
+hello
+>>>hi
+hello
+>>>hi
+hello
+>>>hi
+hello
+>>>hi
+hello
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>hi
+hello
+>>>hi
+hello
+>>>hi
+hello
+>>>hi
+hello
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>hi
+hello
+>>>hi
+hello
+>>>hi
+hello
+>>>hi
+hello
+>>>hi
+hello
+>>>hi
+hello
+>>>hi
+hello
+>>>hi
+hello
+>>>hi
+hello
+>>>hi
+hello
+>>>hi
+hello
+>>>hi
+hello
+>>>hi
+hello
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>SFFD
+COMMAND IS INCORRECT
+>>>DFAW
+COMMAND IS INCORRECT
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+COMMAND IS INCORRECT
+type <help> to find command
+>>>hi
+hello
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>sfgss
+COMMAND IS INCORRECT
+type <help> to find command
+>>>sfgsssdfsd
+COMMAND IS INCORRECT
+type <help> to find command
+>>>sfgsssdfsdsdfsff
+COMMAND IS INCORRECT
+type <help> to find command
+>>>sfgsssdfsdsdfsffsdfs
+COMMAND IS INCORRECT
+type <help> to find command
+>>>sfgsssdfsdsdfsffsdfssfs
+COMMAND IS INCORRECT
+type <help> to find command
+>>>sfgsssdfsdsdfsffsdfssfs
+COMMAND IS INCORRECT
+type <help> to find command
+>>>sfgsssdfsdsdfsffsdfssfs
+COMMAND IS INCORRECT
+type <help> to find command
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>hi
+hello
+>>>hi
+hello
+>>>clear
+>>>df
+COMMAND IS INCORRECT
+type <help> to find command
+>>>dfdsffsdf
+COMMAND IS INCORRECT
+type <help> to find command
+>>>dfdsffsdf
+COMMAND IS INCORRECT
+type <help> to find command
+>>>dfdsffsdf
+COMMAND IS INCORRECT
+type <help> to find command
+>>>dfdsffsdf
+COMMAND IS INCORRECT
+type <help> to find command
+>>>dfdsffsdf
+COMMAND IS INCORRECT
+type <help> to find command
+>>>clear
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>hhi
+COMMAND IS INCORRECT
+type <help> to find command
+>>>hhi
+COMMAND IS INCORRECT
+type <help> to find command
+>>>hhi
+COMMAND IS INCORRECT
+type <help> to find command
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time
+>>>hi
+hello
+>>>clear
+>>>clear
+>>>h
+COMMAND IS INCORRECT
+type <help> to find command
+>>>help
+clear: to clear the screen
+get_temp: to get the temperature of the CPU
+get_time: to get the current time

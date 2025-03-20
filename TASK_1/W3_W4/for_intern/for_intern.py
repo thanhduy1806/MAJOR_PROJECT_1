@@ -29,12 +29,12 @@ class RaspiGUI:
         self.app = Application(key_bindings=self.kb, full_screen=True)
         self.container = self.get_container()
 
-        self.current_line = 0 #Dòng hiện tại trong file command
+        
         self.text_from_command = "NO VALUE"
         self.create_info_log_cmd =""
        
-        self.current_line = 0
-        self.save_current_line = 0
+        self.current_line = 0           #Giá trị dòng trong file lưu lệnh tạm, dùng nó để làm các vị trí giới hạn khi hiển thị, có thay đổi
+        self.save_current_line = 0      #Chỉ lưu lại giá trị dòng trong file tạm, không thay đổi, để làm các điều kiện so sánh với terminal,..
 
         self.selected_info = 0
         self.data_input_log = 0
@@ -278,24 +278,28 @@ class RaspiGUI:
                 
             elif self.mode == 'info':
                 selectable_items = self.get_selectable_items()
-                if selectable_items[self.selected_item] == "Logs":
-                    #if hasattr(self.log_command_input, "buffer"):
 
-                        # if event.app.layout.has_focus(self.log_command_input):
-                    self.current_line -= 1
-                    if self.current_line <= 0:
-                        self.current_line = 1
-                    if self.current_line > 0: 
-                        
-                        os_line = os.get_terminal_size().lines
-                        start_idx = max(0, self.current_line - (os_line - 12))
-                        self.create_info_log_cmd = ""
-                                        
-                        for i in range(start_idx,self.current_line):
-                            self.create_info_log_cmd += self.create_info_log_raw[i]
-                        #event.app.invalidate()
-                        self.create_info_log = None
-                        self.create_info_log = self.create_info_log_cmd
+                #Hàm xử lý cuộn lịch sử xem trên cửa sổ logs
+                if selectable_items[self.selected_item] == "Logs":
+                    if self.current_line != 0:                      #
+                        os_line = os.get_terminal_size().lines      #Dùng size terminal để giới hạn vị trí bắt đầu- kết thúc hiển thị ra cửa sổsổ
+                        self.current_line -= 1
+                        if self.save_current_line < os_line -12:    #Kiểm tra xem nếu dòng hiện tại bé hơn kích thước terminal thì ta bù lại cho nó giữ trạng thái cũ
+                            self.current_line +=1                   #Lí do là để nếu lỡ số dòng đang nhỏ hơn kích thước cửa mà ta ấn mũi tên lên thì khi tính start_idx nó ra số âm gây lỗi
+                        if self.save_current_line >= os_line -12:                
+                            if self.current_line < os_line - 12:    #Lí do os_line - 12 là do số hàng của phần cửa sổ hiển thị bằng kích thước hàng terminal -12, 12 là các dòng hiển thị mấy cửa sổ này kia khác
+                                self.current_line = os_line - 12    #Giới hạn lại vị trí dòng so với cửa sổ terminal, nếu có giảm hơn thì đặt nó về lại cái giới hạn đó thôi
+                            if self.current_line >= os_line - 12:   #Các lệnh dưới đây mục tiêu là ghi các lệnh được giới hạn bởi các điều kiện ở trên vào 1 list rồi khi vẽ lại giao diện thì nó hiện ra thôithôi
+                                if self.current_line - (os_line - 12) == 0:
+                                    start_idx = 0
+                                else:
+                                    start_idx = self.current_line - (os_line - 12)
+                                self.create_info_log_cmd = ""
+                                                
+                                for i in range(start_idx,start_idx + (os_line - 12)):
+                                    self.create_info_log_cmd += self.create_info_log_raw[i]
+                                self.create_info_log = None
+                                self.create_info_log = self.create_info_log_cmd
 
                 if selectable_items[self.selected_item] == "SControl":
                     if self.selected_info > 0:
@@ -325,27 +329,24 @@ class RaspiGUI:
                 self.lasted_selected_item = self.selected_item
                 selectable_items = self.get_selectable_items()
                 self.info_frame.title = selectable_items[self.selected_item]
+
             elif self.mode == 'info':
                 selectable_items = self.get_selectable_items()
-                
+
+                #Hàm xử lý cuộn xem lịch sử cửa sổ logs
                 if selectable_items[self.selected_item] == "Logs":
-
-                    #if event.app.layout.has_focus(self.log_command_input):
-                    self.current_line += 1
-                    if self.current_line > self.save_current_line:
-                        self.current_line = self.save_current_line
-
-                    
-                    if self.current_line <= self.save_current_line:
-                                
-                        os_line = os.get_terminal_size().lines
-                        start_idx = max(0, self.current_line - (os_line - 12))
-                        self.create_info_log_cmd = ""
-                                        
-                        for i in range(start_idx,self.current_line):
-                            self.create_info_log_cmd += self.create_info_log_raw[i]
-                        self.create_info_log = None
-                        self.create_info_log = self.create_info_log_cmd
+                    if self.current_line != 0:   
+                        self.current_line += 1                                 #Khi ấn mũi tên xuống thì tăng dòng, để giới hạn vị trí bắt đầu- kết thúc hiển thị trong cửa sổ đó
+                        if self.current_line > self.save_current_line:         #Đặt lại dòng nếu ta có ấn nhiều lần lớn hơn thì đặt nó về lại
+                            self.current_line = self.save_current_line
+                        if self.current_line <= self.save_current_line:        #Từ việc biết dòng thì ta sẽ chặn vị trí bắt đầu và kết thúc để hiển thị khoảng đó ra cửacửa
+                            os_line = os.get_terminal_size().lines
+                            start_idx = max(0, self.current_line - (os_line - 12))
+                            self.create_info_log_cmd = ""           
+                            for i in range(start_idx,self.current_line):
+                                self.create_info_log_cmd += self.create_info_log_raw[i]
+                            self.create_info_log = None
+                            self.create_info_log = self.create_info_log_cmd
                     
 
                 if selectable_items[self.selected_item] == "SControl":
@@ -388,6 +389,7 @@ class RaspiGUI:
                             self.port_buffer = current_field["value"]
                     elif selectable_items[self.selected_item] == "Logs":  # Focus vào TextArea
                         if hasattr(self, 'log_command_input'):
+                            
                             event.app.layout.focus(self.log_command_input)
                     else:
                         event.app.layout.focus(self.info_window)
@@ -411,7 +413,7 @@ class RaspiGUI:
                         self.mode = 'menu'
                         event.app.layout.focus(self.menu_window)
                 if selected_key == "Logs":
-                    self.create_info_log= self.create_info_log_cmd
+                    self.create_info_log = self.create_info_log_cmd
             self.container = self.get_container()
             self.layout.container = self.container            
             event.app.invalidate()
@@ -536,10 +538,10 @@ class RaspiGUI:
             term_width = term_size.columns-28
             apply_text = "[ Apply ]".center(term_width)
             content.append((apply_style, apply_text+"\n"))
-            return content #nó sẽ trả về 1 list chứa các tuple, mỗi tuple sẽ là style của text với text là key hoặc value
-            
-            
-            #đây là chỗ ta sẽ tạo thêm 1 trường hơp nếu nó là logs để cho nó hiển thị cái khuing nhập luioonuioon
+            return content 
+        
+            #nó sẽ trả về 1 list chứa các tuple, mỗi tuple sẽ là style của text với text là key hoặc value
+            #đây là chỗ ta sẽ tạo thêm 1 trường hơp nếu nó là logs để cho nó hiển thị cái khung nhập luôn
             
         elif selected_key == "Tracking":
             content = self.formatted 
@@ -662,38 +664,38 @@ class RaspiGUI:
     #HÀM NÀY DÙNG ĐỂ XỬ LÝ LỆNH NHẬN TỪ COMMAND LINE, HOẠT ĐỘNG DỰA TRÊN VIỆC LẤY BUFFER TỪ WINDOW
     def handle_log_command(self, buffer):
         self.text_from_command = buffer.text.strip()
+        buffer = None
         if self.text_from_command:
             try:
                 # Ví dụ các lệnh xử lý
                 if self.text_from_command.lower() == "help":
-                    # if not hasattr(self, 'create_info_log_raw'):
-                    #     #self.create_info_log = None
-                    #     self.create_info_log_raw = []
-                    #     for data in self.recommended_command:
-                    #         self.create_info_log_raw.append("".join(data)+"\n")
-                    # self.create_info_log = "".join(self.create_info_log_raw)
                     self.write_command(">>>help")
                     self.write_command_temp(">>>help")
+             
                     for i in self.recommended_command:
                         self.write_command(str(i))
                         self.write_command_temp(str(i))
 
                     
-                if self.text_from_command.lower() == "hi":
+                elif self.text_from_command.lower() == "hi":
                     self.write_command(">>>hi")
                     self.write_command_temp(">>>hi")
                     self.write_command("hello")
                     self.write_command_temp("hello")
                     #self.create_info_log = None
 
-                if self.text_from_command.lower() == "clear":
+                elif self.text_from_command.lower() == "clear":
                     self.write_command(">>>clear")
                     self.write_command_temp(">>>clear")
                     with open("command_temp.txt", "w") as file:
                         file.truncate(0)
                     self.create_info_log = None
 
-
+                else: 
+                    self.write_command(">>>"+self.text_from_command)
+                    self.write_command_temp(">>>"+self.text_from_command)
+                    self.write_command("COMMAND IS INCORRECT\n"+"type <help> to find command")
+                    self.write_command_temp("COMMAND IS INCORRECT\n"+"type <help> to find command")
                 
                 self.create_info_log_raw = []
                 self.current_line = 0
@@ -709,6 +711,7 @@ class RaspiGUI:
 
                 for i in range(start_idx,self.current_line):
                     self.create_info_log_cmd += self.create_info_log_raw[i]
+                
                 
 
             except Exception as e:
@@ -760,7 +763,21 @@ class RaspiGUI:
         else:
             #self.info_up_window = Window(FormattedTextControl(self.create_info_content), width=None, height=None)
             
-            self.info_window = Window(FormattedTextControl(self.create_info_content), width=None)
+            if self.selected_item == 2:  # Tracking
+                table_window = Window(FormattedTextControl(self.create_info_content), wrap_lines=True)
+                
+                self.info_window = HSplit([
+                    Window(height=1),  # Khoảng trống trên
+                    VSplit([
+                        Window(width=4),  # Khoảng trống trái
+                        table_window,  # Bảng nằm giữa
+                        Window(width=1),  # Khoảng trống phải
+                    ]),
+                    Window(height=1),  # Khoảng trống dưới
+                ])
+
+            else:
+                self.info_window = Window(FormattedTextControl(self.create_info_content), width=None,)
             self.info_frame = Frame(self.info_window, title=lambda: f"{self.menu_list[self.selected_item]}")
 
         main_content = VSplit([
