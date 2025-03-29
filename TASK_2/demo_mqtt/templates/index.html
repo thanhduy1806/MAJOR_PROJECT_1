@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MQTT Flask Server</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js"></script>
+</head>
+<body>
+    <h1>Điều khiển LED</h1>
+    <p>LED1: <span id="led1">{{ data['led1'] }}</span></p>
+    <div id="button_led1">
+        <button onclick="toggleLed('led1', '1')">Bật LED1</button>
+        <button onclick="toggleLed('led1', '0')">Tắt LED1</button>
+    </div>
+        
+    <p>LED2: <span id="led2">{{ data['led2'] }}</span></p>
+    <div id="button_led2"> 
+        <button onclick="toggleLed('led2', '1')">Bật LED2</button>
+        <button onclick="toggleLed('led2', '0')">Tắt LED2</button>
+    </div>
+    
+    <div id="status_time_container">
+        <p><strong>LICH SU TRANG THAI</strong></p>
+        <ul id="status_time_list">
+            
+        </ul>
+    </div>
+
+    <script>
+        const socket = io.connect('http://192.168.31.8:5000');
+
+        function toggleLed(led, status) {
+            socket.emit('change_status_led', { [led]: status });
+        }
+
+        socket.on('update_led_status', function(data) {
+            document.getElementById('led1').innerText = data.led1;
+            document.getElementById('led2').innerText = data.led2;
+        });
+
+        socket.on('statust_time', function(data){
+            addstatus("LED 1", data.led1.state, data.led1.time);
+            addstatus("LED 2", data.led2.state, data.led2.time);
+        });
+
+        function addstatus(name,state,time){
+            let ul = document.getElementById("status_time_list")
+            let li = document.createElement("li")
+            li.textContent = `${name}: ${state == "1" ? "Bật" : "Tắt"} lúc ${time}`;
+
+            ul.appendChild(li);
+            ul.scrollTop = ul.scrollHeight;
+
+        }
+
+    </script>
+</body>
+</html>
