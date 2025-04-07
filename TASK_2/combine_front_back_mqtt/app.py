@@ -50,7 +50,7 @@ def on_message(client, userdata, msg):
 mqtt_client = mqtt.Client()
 mqtt_client.on_connect = on_connect
 mqtt_client.on_message = on_message  # Đăng ký callback
-mqtt_client.connect("192.168.31.8", 1883, 60)
+mqtt_client.connect("192.168.1.10", 1883, 60)
 mqtt_client.loop_start()
 
 @app.route('/')

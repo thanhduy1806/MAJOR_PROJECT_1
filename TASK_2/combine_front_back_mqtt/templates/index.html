@@ -8,15 +8,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js"></script>
 </head>
 <body>
-    <h1>Điều khiển LED</h1>
-    <p>LED1: <span id="led1">{{ data['led1'] }}</span></p>
-    <div id="button_led1">
+    <h1>CONTROL LED</h1>
+    <p id="LED1">LED 1: <span id="led1">{{ data['led1'] }}</span></p>
+    <div class="button_container_led1">
         <button onclick="toggleLed('led1', '1')">Bật LED1</button>
         <button onclick="toggleLed('led1', '0')">Tắt LED1</button>
     </div>
         
-    <p>LED2: <span id="led2">{{ data['led2'] }}</span></p>
-    <div id="button_led2"> 
+    <p id ="LED2">LED 2: <span id="led2">{{ data['led2'] }}</span></p>
+    <div class="button_container_led2"> 
         <button onclick="toggleLed('led2', '1')">Bật LED2</button>
         <button onclick="toggleLed('led2', '0')">Tắt LED2</button>
     </div>
@@ -29,7 +29,7 @@
     </div>
 
     <script>
-        const socket = io.connect('http://192.168.31.8:5000');
+        const socket = io.connect('http://192.168.1.10:5000');
 
         function toggleLed(led, status) {
             socket.emit('change_status_led', { [led]: status });

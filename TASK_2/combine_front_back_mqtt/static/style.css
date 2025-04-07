@@ -34,6 +34,21 @@ strong{
     padding: 5px;
     border-bottom: 1px solid #eee;
 }
+
+#LED1{
+    position: absolute;
+    top: 70px; /* Đặt ngay trên message_container */
+    left: 40px;
+    font-size: 25px;
+    color: #ff1414;
+}
+#LED2{
+    position: absolute;
+    top: 200px; /* Đặt ngay trên message_container */
+    left: 40px;
+    font-size: 25px;
+    color: #ff1414;
+}
 .led_status_container {
     position: fixed; /* Vùng cố định trên trang */
     top: 300px; /* Cách đỉnh trang 100px */
@@ -45,41 +60,66 @@ strong{
     padding: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
-#button_container_led1 {
+.button_container_led1 {
     position: absolute;
-    top: 150px; /* Đặt ngay trên message_container */
+    top: 130px; /* Đặt ngay trên message_container */
     left: 40px;
 }
 
 .button_container_led1 button {
     padding: 5px 10px;
     margin-right: 10px;
-    background-color: #007bff;
+    background-color: #64a9f3;
     color: white;
     font-size: 20px;
     border: none;
     border-radius: 3px;
     cursor: pointer;
-    width: 100px;
+    width: 150px;
     height: 60px;
+    border: 2px solid #333;
 }
 
 .button_container_led1 button:hover {
     background-color: #0056b3;
 }
 
+.button_container_led2 {
+    position: absolute;
+    top: 260px; /* Đặt ngay trên message_container */
+    left: 40px;
+}
+
+.button_container_led2 button {
+    padding: 5px 10px;
+    margin-right: 10px;
+    background-color: #64a9f3;
+    color: white;
+    font-size: 20px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    width: 150px;
+    height: 60px;
+    border: 2px solid #333;
+}
+
+.button_container_led2 button:hover {
+    background-color: #0056b3;
+}
 #status_time_container {
     position: absolute;
-    top : 300px;
+    top : 400px;
     width: 300px; /* Độ rộng của khung chứa */
     border: 2px solid #333; /* Viền cho khung */
     border-radius: 8px; /* Bo góc */
     padding: 10px;
     background-color: #f9f9f9; /* Màu nền nhẹ */
+    
 }
 
 #status_time_list {
-    max-height: 200px; /* Giới hạn chiều cao */
+    max-height: 300px; /* Giới hạn chiều cao */
     overflow-y: auto; /* Cho phép cuộn dọc */
     list-style-type: none; /* Bỏ dấu chấm mặc định của danh sách */
     padding: 0;
